@@ -23,7 +23,7 @@ class GitServiceImpl implements GitService {
         if (this.searchCache.has(q)) {
             return this.searchCache.get(q);
         }
-        const resp = await this.octokit.request('GET /search/users', { q });
+        const resp = await this.octokit.request('GET /search/users', { q, request: { retries: 0 } });
         this.searchCache.set(q, resp);
         return resp;
     }
@@ -38,7 +38,7 @@ class GitServiceImpl implements GitService {
     }
 
     async request<T = unknown>(req: string) {
-        return this.octokit.request(req, {}) as unknown as OctokitResponse<T>;
+        return this.octokit.request(req, { request: { retries: 0 }}) as unknown as OctokitResponse<T>;
     }
 }
 
