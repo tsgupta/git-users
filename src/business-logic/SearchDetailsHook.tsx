@@ -103,20 +103,26 @@ async function getRepoDetails(user: GitUser) {
         return [];
     }
     const { data: repoDetails } = repoDetailsResp;
-    const repos: GitRepo[] = [];
+    const commitRequests: Promise<GitRepo>[] = [];
     for (let i = 0; i < repoDetails.length; ++i) {
         const repo = repoDetails[i];
         const { name, commits_url, id } = repo;
         const url = commits_url.replace('{/sha}', '');
-        const commitResp = await gitService.request<any[]>(url);
-        if (isLimitReached(commitResp)) {
-            break;
-        }
-        repos.push({
-            id,
-            repoName: name,
-            commits: commitResp.data.length
-        });
+        const commitReq = gitService.request<any[]>(url)
+            .then(commitResp => {
+                const repo: GitRepo = {
+                    id,
+                    repoName: name,
+                    commits: commitResp.data.length
+                };
+                return repo;
+            })
+            .catch(() => {
+                console.error('Error fetching commits');
+                return null;
+            });
+        commitRequests.push(commitReq);
     };
+    const repos = await Promise.all(commitRequests).then(repos => repos.filter(r => Boolean(r)));
     return repos;
 }
