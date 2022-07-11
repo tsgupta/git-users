@@ -7,13 +7,18 @@ To maximize the rate limit of the app provide `access-token` in **gitconfig.json
 An access token can be created by visiting [token page](https://github.com/settings/tokens) if one has a github account.
 
 ## Running the app
+In the project directory:
 
-In the project directory, you can run:
+1. Install dependencies
+> npm install
+
+2. Run the app in the development mode.
 > npm start
 
-Runs the app in the development mode.\
+3. Access the app\
 Open [http://localhost:3002](http://localhost:3002) to view it in the browser.
 
+## Using the app
 The app needs the user to input a csv file in order to provide input to begin the search.  
 Once file is selected the app automatically starts showing the output on the page.  
 `sample-input.txt` provided in the repo can be used to test run the app.
